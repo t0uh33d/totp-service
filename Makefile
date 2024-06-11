@@ -11,7 +11,7 @@ GOCLEAN=$(GOCMD) clean
 GOTEST=$(GOCMD) test
 GOMOD=$(GOCMD) mod
 # Binary names, adjusted to place the output in ./bin/
-BINARY_NAME=automate_ai_service
+BINARY_NAME=totp_service
 BINARY_PATH=./bin/$(BINARY_NAME)
 BINARY_UNIX=$(BINARY_PATH)_unix
 BACKEND_SERVICE_ENTRYPOINT=./cmd/start/main.go
@@ -57,3 +57,41 @@ ec2-db-up:
 
 ec2-db-down:
 	@goose -dir=$(DB_MIGRATION) postgres $$EC2_DB_URL down
+
+.PHONY: tailwind-watch
+tailwind-watch:
+	./tailwindcss -i ./static/css/input.css -o ./static/css/style.css --watch
+
+.PHONY: tailwind-build
+tailwind-build:
+	./tailwindcss -i ./static/css/input.css -o ./static/css/style.min.css --minify
+
+.PHONY: templ-generate
+templ-generate:
+	templ generate
+
+.PHONY: templ-watch
+templ-watch:
+	templ generate --watch
+	
+.PHONY: dev
+dev:
+	go build -o ./tmp/$(APP_NAME) ./cmd/$(APP_NAME)/main.go && air
+
+.PHONY: build
+build-htmx:
+	make tailwind-build
+	make templ-generate
+	go build -ldflags "-X main.Environment=production" -o ./bin/$(APP_NAME) ./cmd/$(APP_NAME)/main.go
+
+.PHONY: vet
+vet:
+	go vet ./...
+
+.PHONY: staticcheck
+staticcheck:
+	staticcheck ./...
+
+.PHONY: test
+test:
+	  go test -race -v -timeout 30s ./...
