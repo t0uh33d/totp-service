@@ -9,8 +9,7 @@ import (
 )
 
 type AppConfig struct {
-	OPEN_AI_KEY string
-	DB_URL      string
+	DB_URL string
 }
 
 var GlobalAppConfig *AppConfig
@@ -26,8 +25,7 @@ func LoadConfig() {
 	if OPEN_AI_KEY != "" {
 		// bot_handler.Client = openai.NewClient(OPEN_AI_KEY)
 		GlobalAppConfig = &AppConfig{
-			OPEN_AI_KEY: OPEN_AI_KEY,
-			DB_URL:      "",
+			DB_URL: "",
 		}
 	} else {
 		fmt.Println("Failed to load configuration: Missing required environment variables.")
