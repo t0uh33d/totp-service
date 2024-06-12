@@ -1,4 +1,4 @@
-package login_handler
+package view_handler
 
 import (
 	"net/http"
@@ -7,7 +7,7 @@ import (
 	"github.com/t0uh33d/totp-service/internal/views"
 )
 
-func Login(c *gin.Context) {
-	// utils.RenderTemplComponent(c, views.Login())
+func ViewHandler(c *gin.Context) {
+
 	c.HTML(http.StatusOK, "", views.Login())
 }

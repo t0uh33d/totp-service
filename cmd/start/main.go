@@ -3,8 +3,8 @@ package main
 import (
 	"github.com/gin-gonic/gin"
 	_ "github.com/lib/pq"
-	v1 "github.com/t0uh33d/totp-service/internal/api/v1"
-	"github.com/t0uh33d/totp-service/internal/api/v1/login_handler"
+	api_v1 "github.com/t0uh33d/totp-service/internal/api/v1"
+	"github.com/t0uh33d/totp-service/internal/api/v1/view_handler"
 	"github.com/t0uh33d/totp-service/internal/config"
 	"github.com/t0uh33d/totp-service/internal/tmpl_renderer"
 )
@@ -22,9 +22,9 @@ func main() {
 	htmlRenderer := router.HTMLRender
 	router.HTMLRender = &tmpl_renderer.HTMLTemplRenderer{FallbackHtmlRenderer: htmlRenderer}
 
-	v1 := router.Group("/v1", v1.DisableCacheInDevMode)
+	router.Use(api_v1.DisableCacheInDevMode)
 
-	v1.GET("/login", login_handler.Login)
+	router.GET("/", view_handler.ViewHandler)
 
 	router.Run(":7230")
 }
